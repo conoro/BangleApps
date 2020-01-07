@@ -1,4 +1,3 @@
-
 Bangle.setLCDMode("120x120");
 
 var SPEED = 0.5;
@@ -14,19 +13,19 @@ var score;
 
 function newBarrier(x) {
   barriers.push({
-    x1 : x-7,
-    x2 : x+7,
-    y : 20+Math.random()*38,
-    gap : 10+Math.random()*10
+    x1: x - 7,
+    x2: x + 7,
+    y: 20 + Math.random() * 38,
+    gap: 10 + Math.random() * 10
   });
 }
 
 function gameStart() {
   running = true;
-  birdy = 48/2;
+  birdy = 48 / 2;
   birdvy = 0;
   barriers = [];
-  for (var i=38;i<g.getWidth();i+=38)
+  for (var i = 38; i < g.getWidth(); i += 38)
     newBarrier(i);
   score = 0;
 }
@@ -38,21 +37,21 @@ function gameStop() {
 function draw() {
   g.setBgColor("#71c6cf");
   g.clear();
-  floorpos+=SPEED;
-  var H = g.getHeight()-24;
-  for (var x=-(floorpos&15);x<g.getWidth();x+=16)
-    g.drawImage(FLOORIMG,x,H);
+  floorpos += SPEED;
+  var H = g.getHeight() - 24;
+  for (var x = -(floorpos & 15); x < g.getWidth(); x += 16)
+    g.drawImage(FLOORIMG, x, H);
 
 
   if (!running) {
-    var x = g.getWidth()/2;
+    var x = g.getWidth() / 2;
     g.setColor("#000000");
-    g.setFontAlign(0,0);
-    g.setFont("4x6",2);
-    g.drawString("GAME OVER!",x,20);
-    g.setFont("6x8",1);
-    g.drawString("Score",x,40);
-    g.drawString(score,x,56);
+    g.setFontAlign(0, 0);
+    g.setFont("4x6", 2);
+    g.drawString("GAME OVER!", x, 20);
+    g.setFont("6x8", 1);
+    g.drawString("Score", x, 40);
+    g.drawString(score, x, 56);
     g.flip();
     return;
   }
@@ -64,31 +63,33 @@ function draw() {
   if (birdy > H)
     gameStop();
   // draw bird
-  g.drawImage(BIRDIMG, 6,birdy, {rotate:Math.atan2(birdvy,15)});
+  g.drawImage(BIRDIMG, 6, birdy, {
+    rotate: Math.atan2(birdvy, 15)
+  });
   // draw barriers
-  barriers.forEach(function(b) {
-    b.x1-= SPEED;
-    b.x2-= SPEED;
-    var btop = b.y-b.gap;
-    var bbot = b.y+b.gap;
+  barriers.forEach(function (b) {
+    b.x1 -= SPEED;
+    b.x2 -= SPEED;
+    var btop = b.y - b.gap;
+    var bbot = b.y + b.gap;
     g.setColor("#73bf2f"); // middle
-    g.fillRect(b.x1+4, 0, b.x2-4, btop-1);
-    g.fillRect(b.x1+4, bbot, b.x2-4, H-1);
+    g.fillRect(b.x1 + 4, 0, b.x2 - 4, btop - 1);
+    g.fillRect(b.x1 + 4, bbot, b.x2 - 4, H - 1);
     g.setColor("#c0f181"); // left
-    g.fillRect(b.x1+1, 0, b.x1+3, btop-1);
-    g.fillRect(b.x1+1, bbot, b.x1+3, H-1);
+    g.fillRect(b.x1 + 1, 0, b.x1 + 3, btop - 1);
+    g.fillRect(b.x1 + 1, bbot, b.x1 + 3, H - 1);
     g.setColor("#538917"); // right
-    g.fillRect(b.x2-3, 0, b.x2-1, btop-1);
-    g.fillRect(b.x2-3, bbot, b.x2-1, H-1);
+    g.fillRect(b.x2 - 3, 0, b.x2 - 1, btop - 1);
+    g.fillRect(b.x2 - 3, bbot, b.x2 - 1, H - 1);
     g.setColor("#808080");
-    g.drawRect(b.x1+1, -1, b.x2-2, btop-5);
-    g.drawRect(b.x1, btop-5, b.x2, btop);
-    g.drawRect(b.x1, bbot, b.x2, bbot+5);
-    g.drawRect(b.x1+1, bbot+5, b.x2-1, H);
-    if (b.x1<6 && (birdy-3<btop || birdy+3>bbot))
+    g.drawRect(b.x1 + 1, -1, b.x2 - 2, btop - 5);
+    g.drawRect(b.x1, btop - 5, b.x2, btop);
+    g.drawRect(b.x1, bbot, b.x2, bbot + 5);
+    g.drawRect(b.x1 + 1, bbot + 5, b.x2 - 1, H);
+    if (b.x1 < 6 && (birdy - 3 < btop || birdy + 3 > bbot))
       gameStop();
   });
-  while (barriers.length && barriers[0].x2<=0) {
+  while (barriers.length && barriers[0].x2 <= 0) {
     barriers.shift();
     newBarrier(g.getWidth());
   }
@@ -96,19 +97,13 @@ function draw() {
   g.flip();
 }
 
-function onInit() {
-  gameStart();
-  setInterval(draw, 50);
-}
-
-
-Bangle.on('touch', function(button) {
+Bangle.on('touch', function (button) {
   if (!running) {
     gameStart();
   } else {
-     birdvy -= 2;
+    birdvy -= 2;
   }
 });
 
-// Finally, start everything going
-onInit();
+gameStart();
+setInterval(draw, 50);
